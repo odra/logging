@@ -22,6 +22,10 @@ test_suite(
     tests = [
         "//score/datarouter/test/ut:unit_tests",
     ],
+    target_compatible_with = select({
+        "//platforms:is_qnx": [],
+        "//platforms:default": ["@platforms//:incompatible"],
+    }),
     visibility = ["@score_logging//score/datarouter:__pkg__"],
 )
 
@@ -30,5 +34,9 @@ py_unittest_qnx_test(
     test_suites = [
         "//score/datarouter/test/ut:unit_tests_qnx",
     ],
+    target_compatible_with = select({
+        "//platforms:is_qnx": [],
+        "//platforms:default": ["@platforms//:incompatible"],
+    }),
     visibility = ["//visibility:public"],  # platform_only
 )
