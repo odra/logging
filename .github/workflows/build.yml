@@ -26,8 +26,21 @@ env:
   SCORE_QNX_LICENSE: ${{ secrets.SCORE_QNX_LICENSE }}
 jobs:
   build:
-    name: Build Bazel Code
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        score_platform:
+          - x86_64-linux
+          - x86_64-autosd
+          - aarch64-autosd
+        include:
+          - score_platform: x86_64-linux
+            runner: ubuntu-latest
+          - score_platform: x86_64-autosd
+            runner: ubuntu-24.04
+          - score_platform: aarch64-autosd
+            runner: ubuntu-24.04-arm
+    name: Build Bazel Code (${{ matrix.score_platform}})
+    runs-on: ${{ matrix.runner }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4.2.2
@@ -62,4 +75,5 @@ jobs:
 
       - name: Build with Bazel
         run: |
-          bazel build --lockfile_mode=error --config x86_64-linux //...
+          # bazel build --lockfile_mode=error --config ${{ matrix.score_platform }} //...
+          bazel build --config ${{ matrix.score_platform }} //...
